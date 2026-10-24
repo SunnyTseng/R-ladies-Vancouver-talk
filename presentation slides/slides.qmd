@@ -1,0 +1,226 @@
+---
+title: "Rainy Day Bioacoustics: <br> Listening to Birds with R"
+
+author: Sunny Tseng, PhD
+date: today
+
+format:
+  revealjs:
+    theme: [default, custom.scss]
+    
+    slide-number: true
+    chalkboard: 
+      buttons: false
+    preview-links: auto
+    # logo:
+    #   path: images/quarto.png
+    #   alt: "Quarto logo"
+resources:
+  - demo.pdf
+---
+
+## R + bird (?
+
+Sounds like a great mix of topics!
+
+-   rOpenSci
+
+-   "doing a talk... on any of your projects"
+
+    -   R enthusiast
+
+    -   bird watcher / field recordist
+
+    -   bioacoustics researcher
+
+-   Cool opportunity to meet R Ladies Vancouver folks!
+
+## About me
+
+::::: columns
+::: {.column width="65%"}
+-   Independent data consultant
+
+-   R user since 2015 (!
+
+    -   script --\> shinyR --\> rmarkdown --\> quarto --\> package development
+
+-   Exploring AI agent in R
+
+    -   claude code
+    -   codex
+    -   posit agent
+
+-   Carve a pumpkin!
+:::
+
+::: {.column width="35%"}
+![](images/clipboard-2526588964.jpeg)
+:::
+:::::
+
+## How about you
+
+::::: columns
+::: {.column width="35%"}
+-   Your name
+
+-   Career background
+
+-   Experience with R
+
+-   Halloween plans?
+:::
+
+::: {.column width="65%"}
+![](images/clipboard-2727946122.png)
+:::
+:::::
+
+## Outline
+
+1.  R communities and opportunities
+2.  Listen to some birds in R
+
+> This is meant to be a interactive session. So feel free to ask questions or drop your thoughts.
+
+# R communities and opportunities
+
+## R community
+
+A community is essential, especially in this fast-changing world
+
+To share experience, information, most updated tools
+
+#### R communities
+
+-   rOpenSci - open tools for open science (2024)
+
+-   R Ladies
+
+## rOpenSci
+
+A community promoting open science
+
+![](images/clipboard-55839762.png)
+
+## Championship program
+
+-   10 month program, starting every year fall
+
+-   Scholarship for package development, with mentor paird
+
+## bbsTaiwan
+
+-   What I did with the championship program
+
+## Other initiatives
+
+-   Peer-reviewed package
+
+-   R universe package
+
+-   working hours
+
+-   community call
+
+-   A slack channel
+
+## Posit-conf
+
+-   Opportunity scholar
+
+-   Workshops - Jenny Bryan, Hadley Waker
+
+-   The newest update from the posit - positron announcement
+
+## R Consortium
+
+-   Project fundings
+
+-   
+
+## To summary
+
+#### R communities
+
+-   rOpenSci
+
+-   R Ladies
+
+#### Conferences
+
+-   posit-conf
+
+-   useR!
+
+#### Funding
+
+-   R Consortium (for event, community building, project)
+
+-   OBS (for travelliing)
+
+# Listen to some birds
+
+## Packages for birds in R
+
+## 1. Open-source opportunities in R
+
+-   rOpenSci championship program –\> package development –\> BBS Taiwan
+
+-   What is rOpenSci and what it does (an open-source program that support open source software
+
+    -   r universe
+
+    -   peer-review (on top of CRAN, bioconduct)
+
+    -   Chamopion program (mentor, mentee)
+
+    -   Working together
+
+    -   community call
+
+    -   My experience with rOpenSci
+
+-   posit::conf 2024
+
+-   NSERC grant
+
+-   Rconsortium grant –\> birdnetTools
+
+## 2. Building opensource packages
+
+-   script –\> function
+
+-   Package development
+
+-   R shiny app
+
+-   Quarto
+
+-   Positron
+
+## 3. Let's talk about birds
+
+-   Xeno-Canto package - listening
+
+## Conclusion
+
+## Quarto
+
+Quarto enables you to weave together content and executable code into a finished presentation. To learn more about Quarto presentations see <https://quarto.org/docs/presentations/>.
+
+## Bullets
+
+When you click the **Render** button a document will be generated that includes:
+
+-   Content authored with markdown
+-   Output from executable code
+
+## Code
+
+When you click the **Render** button a presentation will be generated that includes both content and the output of embedded code. You can embed code like this:
+
+```{r}
+1 + 1
+```

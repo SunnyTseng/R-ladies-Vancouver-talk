@@ -10,7 +10,7 @@
   <meta name="generator" content="quarto-1.7.32">
 
   <meta name="author" content="Sunny Tseng, PhD">
-  <meta name="dcterms.date" content="2026-10-23">
+  <meta name="dcterms.date" content="2026-10-26">
   <title>Rainy Day Bioacoustics:   Listening to Birds with R</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -29,6 +29,72 @@
       margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
       vertical-align: middle;
     }
+    /* CSS for syntax highlighting */
+    html { -webkit-text-size-adjust: 100%; }
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      { color: #003b4f; background-color: #f1f3f5; }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span { color: #003b4f; } /* Normal */
+    code span.al { color: #ad0000; } /* Alert */
+    code span.an { color: #5e5e5e; } /* Annotation */
+    code span.at { color: #657422; } /* Attribute */
+    code span.bn { color: #ad0000; } /* BaseN */
+    code span.bu { } /* BuiltIn */
+    code span.cf { color: #003b4f; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #20794d; } /* Char */
+    code span.cn { color: #8f5902; } /* Constant */
+    code span.co { color: #5e5e5e; } /* Comment */
+    code span.cv { color: #5e5e5e; font-style: italic; } /* CommentVar */
+    code span.do { color: #5e5e5e; font-style: italic; } /* Documentation */
+    code span.dt { color: #ad0000; } /* DataType */
+    code span.dv { color: #ad0000; } /* DecVal */
+    code span.er { color: #ad0000; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #ad0000; } /* Float */
+    code span.fu { color: #4758ab; } /* Function */
+    code span.im { color: #00769e; } /* Import */
+    code span.in { color: #5e5e5e; } /* Information */
+    code span.kw { color: #003b4f; font-weight: bold; } /* Keyword */
+    code span.op { color: #5e5e5e; } /* Operator */
+    code span.ot { color: #003b4f; } /* Other */
+    code span.pp { color: #ad0000; } /* Preprocessor */
+    code span.sc { color: #5e5e5e; } /* SpecialChar */
+    code span.ss { color: #20794d; } /* SpecialString */
+    code span.st { color: #20794d; } /* String */
+    code span.va { color: #111111; } /* Variable */
+    code span.vs { color: #20794d; } /* VerbatimString */
+    code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
   </style>
   <link rel="stylesheet" href="slides_files/libs/revealjs/dist/theme/quarto-a359ad0ac94f4576703bb1d43032dfb3.css">
   <link href="slides_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
@@ -124,6 +190,9 @@
       margin-right: 0; 
     }
   </style>
+  <script src="slides_files/libs/quarto-diagram/mermaid.min.js"></script>
+  <script src="slides_files/libs/quarto-diagram/mermaid-init.js"></script>
+  <link href="slides_files/libs/quarto-diagram/mermaid.css" rel="stylesheet">
 </head>
 <body class="quarto-light">
   <div class="reveal">
@@ -140,7 +209,7 @@ Sunny Tseng, PhD
 </div>
 </div>
 
-  <p class="date">2026-10-23</p>
+  <p class="date">2026-10-26</p>
 </section>
 <section id="r-bird" class="slide level2">
 <h2>R + bird (?</h2>
@@ -283,67 +352,287 @@ Sunny Tseng, PhD
 <h1>Listen to some birds</h1>
 
 </section>
-<section id="packages-for-birds-in-r" class="slide level2">
-<h2>Packages for birds in R</h2>
+<section id="packages-for-birds-bioacoustics" class="slide level2 smaller">
+<h2>Packages for birds / bioacoustics</h2>
+<table class="caption-top">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Step</th>
+<th>Package</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Get recordings</strong></td>
+<td><code>suwo</code></td>
+<td>Search &amp; download Xeno-Canto, Macaulay, iNaturalist</td>
+</tr>
+<tr class="even">
+<td><strong>Read / convert</strong></td>
+<td><code>tuneR</code></td>
+<td>Read MP3/WAV, resample, convert</td>
+</tr>
+<tr class="odd">
+<td></td>
+<td><code>av</code></td>
+<td>Read MP3/WAV, resample, convert</td>
+</tr>
+<tr class="even">
+<td><strong>Visualize / measure</strong></td>
+<td><code>seewave</code></td>
+<td>Spectrograms, acoustic measurements</td>
+</tr>
+<tr class="odd">
+<td></td>
+<td><code>warbleR</code></td>
+<td>Spectrograms, acoustic measurements</td>
+</tr>
+<tr class="even">
+<td></td>
+<td><code>dynaSpec</code></td>
+<td>Animated, scrolling spectrograms</td>
+</tr>
+<tr class="odd">
+<td><strong>Signals detection / identification</strong></td>
+<td><code>ohun</code></td>
+<td>Automatic detection, template matching</td>
+</tr>
+<tr class="even">
+<td></td>
+<td><code>monitoR</code></td>
+<td>Automatic detection, template matching</td>
+</tr>
+<tr class="odd">
+<td></td>
+<td><code>birdnetR</code></td>
+<td>BirdNET in R (Python under the hood)</td>
+</tr>
+<tr class="even">
+<td></td>
+<td><code>birdnetTools</code></td>
+<td>Filter, validate, visualize BirdNET output</td>
+</tr>
+<tr class="odd">
+<td><strong>Soundscapes index</strong></td>
+<td><code>soundecology</code></td>
+<td>Acoustic indices (ACI, NDSI, …)</td>
+</tr>
+</tbody>
+</table>
 </section>
-<section id="open-source-opportunities-in-r" class="slide level2">
-<h2>1. Open-source opportunities in R</h2>
-<ul>
-<li><p>rOpenSci championship program –&gt; package development –&gt; BBS Taiwan</p></li>
-<li><p>What is rOpenSci and what it does (an open-source program that support open source software</p>
-<ul>
-<li><p>r universe</p></li>
-<li><p>peer-review (on top of CRAN, bioconduct)</p></li>
-<li><p>Chamopion program (mentor, mentee)</p></li>
-<li><p>Working together</p></li>
-<li><p>community call</p></li>
-<li><p>My experience with rOpenSci</p></li>
-</ul></li>
-<li><p>posit::conf 2024</p></li>
-<li><p>NSERC grant</p></li>
-<li><p>Rconsortium grant –&gt; birdnetTools</p></li>
-</ul>
+<section id="todays-plan" class="slide level2">
+<h2>Today’s plan</h2>
+<div class="cell" data-reveal="true" data-layout-align="default">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource default number-lines code-with-copy"><code class="sourceCode default"><span id="cb1-1"><a href=""></a>flowchart LR</span>
+<span id="cb1-2"><a href=""></a>  A[Xeno-Canto&lt;br&gt;search] --&gt; B[Download&lt;br&gt;MP3]</span>
+<span id="cb1-3"><a href=""></a>  B --&gt; C[Listen &amp;&lt;br&gt;look]</span>
+<span id="cb1-4"><a href=""></a>  C --&gt; D[BirdNET]</span>
+<span id="cb1-5"><a href=""></a>  D --&gt; E{Did it get&lt;br&gt;it right?}</span>
+<span id="cb1-6"><a href=""></a>  E --&gt; F[birdnetTools]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<p></p><figure class=""><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart LR
+  A[Xeno-Canto&lt;br&gt;search] --&gt; B[Download&lt;br&gt;MP3]
+  B --&gt; C[Listen &amp;&lt;br&gt;look]
+  C --&gt; D[BirdNET]
+  D --&gt; E{Did it get&lt;br&gt;it right?}
+  E --&gt; F[birdnetTools]
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<div class="fragment">
+<blockquote>
+<p>Let’s play <strong>Name that bird!</strong> 🐦</p>
+</blockquote>
+</div>
 </section>
-<section id="building-opensource-packages" class="slide level2">
-<h2>2. Building opensource packages</h2>
-<ul>
-<li><p>script –&gt; function</p></li>
-<li><p>Package development</p></li>
-<li><p>R shiny app</p></li>
-<li><p>Quarto</p></li>
-<li><p>Positron</p></li>
-</ul>
-</section>
-<section id="lets-talk-about-birds" class="slide level2">
-<h2>3. Let’s talk about birds</h2>
-<ul>
-<li>Xeno-Canto package - listening</li>
-</ul>
-</section>
-<section id="conclusion" class="slide level2">
-<h2>Conclusion</h2>
-</section>
-<section id="quarto" class="slide level2">
-<h2>Quarto</h2>
-<p>Quarto enables you to weave together content and executable code into a finished presentation. To learn more about Quarto presentations see <a href="https://quarto.org/docs/presentations/" class="uri">https://quarto.org/docs/presentations/</a>.</p>
-</section>
-<section id="bullets" class="slide level2">
-<h2>Bullets</h2>
-<p>When you click the <strong>Render</strong> button a document will be generated that includes:</p>
-<ul>
-<li>Content authored with markdown</li>
-<li>Output from executable code</li>
-</ul>
-</section>
-<section id="code" class="slide level2">
-<h2>Code</h2>
-<p>When you click the <strong>Render</strong> button a presentation will be generated that includes both content and the output of embedded code. You can embed code like this:</p>
+<section id="step-1-ask-xeno-canto" class="slide level2">
+<h2>Step 1: Ask Xeno-Canto</h2>
+<p><a href="https://xeno-canto.org">xeno-canto.org</a>: ~1 million wildlife recordings, shared under Creative Commons</p>
 <div class="cell">
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] 2</code></pre>
+<div class="sourceCode cell-code" id="cb2" data-code-line-numbers="|1-2|4-7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href=""></a><span class="fu">library</span>(httr2)</span>
+<span id="cb2-2"><a href=""></a><span class="fu">Sys.getenv</span>(<span class="st">"XC_API_KEY"</span>)    <span class="co"># free key from xeno-canto.org/account</span></span>
+<span id="cb2-3"><a href=""></a></span>
+<span id="cb2-4"><a href=""></a><span class="fu">request</span>(<span class="st">"https://xeno-canto.org/api/3/recordings"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb2-5"><a href=""></a>  <span class="fu">req_url_query</span>(<span class="at">query =</span> <span class="st">'en:"Varied Thrush" q:A len:10-40'</span>,</span>
+<span id="cb2-6"><a href=""></a>                <span class="at">key   =</span> <span class="fu">Sys.getenv</span>(<span class="st">"XC_API_KEY"</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb2-7"><a href=""></a>  <span class="fu">req_perform</span>() <span class="sc">|&gt;</span></span>
+<span id="cb2-8"><a href=""></a>  <span class="fu">resp_body_json</span>(<span class="at">simplifyVector =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="callout callout-tip callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Tip</strong></p>
+</div>
+<div class="callout-content">
+<p>Xeno-Canto has retired API v2, so <code>warbleR::query_xc()</code> no longer works. Use API v3 (with a key), or try the newer <code>suwo</code> package.</p>
 </div>
 </div>
+</div>
+</section>
+<section id="step-2-download" class="slide level2">
+<h2>Step 2: Download</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href=""></a><span class="fu">library</span>(purrr)</span>
+<span id="cb3-2"><a href=""></a></span>
+<span id="cb3-3"><a href=""></a><span class="fu">walk2</span>(xc_meta<span class="sc">$</span>download_url, xc_meta<span class="sc">$</span>mp3, \(url, dest) {</span>
+<span id="cb3-4"><a href=""></a>  <span class="fu">request</span>(url) <span class="sc">|&gt;</span> <span class="fu">req_perform</span>(<span class="at">path =</span> dest)</span>
+<span id="cb3-5"><a href=""></a>})</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="fragment">
+<p>Search tags you can combine:</p>
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th>Tag</th>
+<th>Example</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>en:</code></td>
+<td><code>en:"Barred Owl"</code></td>
+<td>English name</td>
+</tr>
+<tr class="even">
+<td><code>q:</code></td>
+<td><code>q:A</code></td>
+<td>Recording quality (A = best)</td>
+</tr>
+<tr class="odd">
+<td><code>len:</code></td>
+<td><code>len:10-40</code></td>
+<td>Length in seconds</td>
+</tr>
+<tr class="even">
+<td><code>cnt:</code></td>
+<td><code>cnt:canada</code></td>
+<td>Country</td>
+</tr>
+<tr class="odd">
+<td><code>type:</code></td>
+<td><code>type:song</code></td>
+<td>Song, call, drumming…</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="step-3-listen-look" class="slide level2">
+<h2>Step 3: Listen &amp; look</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href=""></a><span class="fu">library</span>(tuneR)</span>
+<span id="cb4-2"><a href=""></a><span class="fu">library</span>(seewave)</span>
+<span id="cb4-3"><a href=""></a></span>
+<span id="cb4-4"><a href=""></a>wav <span class="ot">&lt;-</span> <span class="fu">readMP3</span>(<span class="st">"audio/XC123456.mp3"</span>)</span>
+<span id="cb4-5"><a href=""></a>wav <span class="ot">&lt;-</span> <span class="fu">ffilter</span>(wav, <span class="at">from =</span> <span class="dv">1000</span>, <span class="at">output =</span> <span class="st">"Wave"</span>)   <span class="co"># drop low rumble</span></span>
+<span id="cb4-6"><a href=""></a></span>
+<span id="cb4-7"><a href=""></a><span class="fu">spectro</span>(wav, <span class="at">flim =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">10</span>), <span class="at">collevels =</span> <span class="fu">seq</span>(<span class="sc">-</span><span class="dv">40</span>, <span class="dv">0</span>, <span class="dv">1</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="fragment">
+<ul>
+<li><strong>x-axis</strong>: time, <strong>y-axis</strong>: pitch, <strong>darkness</strong>: loudness</li>
+<li>Every species has a “shape” you can learn to read</li>
+</ul>
+</div>
+</section>
+<section id="name-that-bird" class="slide level2">
+<h2>Name that bird!</h2>
+<p><em>Run <code>prep_audio.R</code> first to fetch the recordings.</em></p>
+</section>
+<section id="step-4-run-birdnet" class="slide level2 smaller">
+<h2>Step 4: Run BirdNET</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href=""></a><span class="fu">library</span>(birdnetR)</span>
+<span id="cb5-2"><a href=""></a></span>
+<span id="cb5-3"><a href=""></a>model <span class="ot">&lt;-</span> <span class="fu">load_birdnet</span>(<span class="at">type =</span> <span class="st">"acoustic"</span>)    <span class="co"># BirdNET v2.4, ~6,500 species</span></span>
+<span id="cb5-4"><a href=""></a></span>
+<span id="cb5-5"><a href=""></a><span class="fu">predict</span>(model, <span class="at">files =</span> <span class="st">"audio/XC123456.mp3"</span>, <span class="at">min_confidence =</span> <span class="fl">0.1</span>) <span class="sc">|&gt;</span></span>
+<span id="cb5-6"><a href=""></a>  <span class="fu">as.data.frame</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="fragment">
+<ul>
+<li>Splits audio into <strong>3-second</strong> windows and scores every species in each one</li>
+</ul>
+</div>
+</section>
+<section id="step-5-use-location" class="slide level2">
+<h2>Step 5: Use location</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href=""></a>geo <span class="ot">&lt;-</span> <span class="fu">load_birdnet</span>(<span class="at">type =</span> <span class="st">"geo"</span>)</span>
+<span id="cb6-2"><a href=""></a></span>
+<span id="cb6-3"><a href=""></a>local_species <span class="ot">&lt;-</span> <span class="fu">predict</span>(geo, <span class="at">latitude =</span> <span class="fl">49.28</span>, <span class="at">longitude =</span> <span class="sc">-</span><span class="fl">123.12</span>,</span>
+<span id="cb6-4"><a href=""></a>                         <span class="at">week =</span> <span class="dv">43</span>) <span class="sc">|&gt;</span>          <span class="co"># Vancouver, late October</span></span>
+<span id="cb6-5"><a href=""></a>  <span class="fu">as.data.frame</span>()</span>
+<span id="cb6-6"><a href=""></a></span>
+<span id="cb6-7"><a href=""></a><span class="fu">predict</span>(model, <span class="at">files =</span> <span class="st">"audio/XC123456.mp3"</span>,</span>
+<span id="cb6-8"><a href=""></a>        <span class="at">species_list =</span> local_species<span class="sc">$</span>species_name)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="scorecard" class="slide level2">
+<h2>Scorecard</h2>
+<div class="fragment">
+<div class="callout callout-important callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Important</strong></p>
+</div>
+<div class="callout-content">
+<p>A BirdNET <strong>confidence score is not a probability</strong>. Pick thresholds per species, using validated data (Wood &amp; Kahl 2024).</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="from-5-clips-to-50000-hours" class="slide level2">
+<h2>From 5 clips to 50,000 hours</h2>
+<p>Real projects: hundreds of recorders × months of audio. Enter <strong><code>birdnetTools</code></strong>:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href=""></a><span class="fu">library</span>(birdnetTools)</span>
+<span id="cb7-2"><a href=""></a></span>
+<span id="cb7-3"><a href=""></a>detections <span class="ot">&lt;-</span> <span class="fu">birdnet_combine</span>(<span class="st">"path/to/birdnet/output"</span>)      <span class="co"># read everything</span></span>
+<span id="cb7-4"><a href=""></a></span>
+<span id="cb7-5"><a href=""></a><span class="fu">birdnet_launch_validation</span>(detections)                         <span class="co"># Shiny app: listen &amp; verify</span></span>
+<span id="cb7-6"><a href=""></a></span>
+<span id="cb7-7"><a href=""></a>thresholds <span class="ot">&lt;-</span> <span class="fu">birdnet_calc_threshold</span>(validated, <span class="at">precision =</span> <span class="fl">0.9</span>)</span>
+<span id="cb7-8"><a href=""></a></span>
+<span id="cb7-9"><a href=""></a>detections <span class="sc">|&gt;</span></span>
+<span id="cb7-10"><a href=""></a>  <span class="fu">birdnet_filter</span>(<span class="at">threshold =</span> thresholds) <span class="sc">|&gt;</span>                   <span class="co"># species-specific cut-offs</span></span>
+<span id="cb7-11"><a href=""></a>  <span class="fu">birdnet_heatmap</span>(<span class="at">species =</span> <span class="st">"Varied Thrush"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="recap-listening-to-birds-in-r" class="slide level2">
+<h2>Recap: listening to birds in R</h2>
+<ol type="1">
+<li><strong>Get</strong>: Xeno-Canto API v3 (<code>httr2</code>, <code>suwo</code>)</li>
+<li><strong>Listen &amp; look</strong>: <code>tuneR</code>, <code>seewave</code></li>
+<li><strong>Identify</strong>: <code>birdnetR</code> + a location filter</li>
+<li><strong>Check</strong>: <code>birdnetTools</code> validation &amp; thresholds</li>
+</ol>
+<div class="fragment">
+<blockquote>
+<p>Don’t trust the robot blindly: <strong>listen</strong> to your data!</p>
+</blockquote>
 
+</div>
 </section></section>
     </div>
   <div class="quarto-auto-generated-content" style="display: none;">

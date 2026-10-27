@@ -5,3 +5,7 @@
 
 /.quarto/
 .Renviron
+
+
+/presentation slides/audio_game
+/presentation slides/audio

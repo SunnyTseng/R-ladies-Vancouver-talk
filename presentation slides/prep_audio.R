@@ -32,6 +32,9 @@ amro_vancouver |>
 
 amro_vancouver[8,]
 
+
+
+
 # download it (saved to "presentation slides/audio")
 audio_dir <- here("presentation slides", "audio")
 dir.create(audio_dir, showWarnings = FALSE)
@@ -73,5 +76,75 @@ as.data.frame(predictions) |>
   select(start_time, end_time, common_name, confidence)
 
 
+
+
+
+# play a game -------------------------------------------------------------
+
+# vancouver recordings
+vancouver_birds <- query_xenocanto(species = 'lat: "49.26" lon: "-123.11" q:"A" type: "song"')
+
+vancouver_birds |>
+  pull(species) |>
+  unique()
+
+# select 2 recordings from each species
+set.seed(123)
+vancouver_birds_selected <- vancouver_birds |>
+  group_by(species) |>
+  slice_sample(n = 2) |>
+  ungroup()
+
+
+# download it (saved to "presentation slides/audio_game")
+audio_game_dir <- here("presentation slides", "audio_game")
+dir.create(audio_game_dir, showWarnings = FALSE)
+
+download_media(metadata = vancouver_birds_selected,
+               path = audio_game_dir)
+
+
+# Start of the game:
+
+# Player A (one person)
+i <- 4 # anynumber between 1:nrow(vancouver_birds)
+
+# Player B (group)
+
+# construct the file name
+audio_path <- paste0(str_replace_all(vancouver_birds_selected[i,]$species, " ", "_"),
+                   "-XC", vancouver_birds_selected[i,]$key, ".", vancouver_birds_selected[i,]$file_extension)
+
+# read in the audio
+ext <- tolower(tools::file_ext(audio_path))
+
+if (ext == "mp3") {
+  audio <- readMP3(here("presentation slides", "audio_game", audio_path))
+} else if (ext == "wav") {
+  audio <- readWave(here("presentation slides", "audio_game", audio_path))
+}
+
+
+# play
+audio |>
+  play()
+
+# look
+audio |>
+  extractWave(from = 0, to = 10, xunit = "time") |>
+  spectro(flim = c(1, 10),
+          fastdisp = TRUE)
+
+# answer by BirdNET
+model <- load_birdnet()
+
+predictions <- predict(model,
+                       files = here("presentation slides", "audio_game", audio_path),
+                       min_confidence = 0.3)
+
+predictions_df <- predictions |>
+  as.data.frame()
+
+# did you get this one!
 
 

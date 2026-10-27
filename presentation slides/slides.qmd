@@ -39,6 +39,8 @@ Sounds like a great mix of topics!
 
 -   Cool opportunity to meet R Ladies Vancouver folks!
 
+
+
 ## About me
 
 ::::: columns
@@ -63,6 +65,8 @@ Sounds like a great mix of topics!
 :::
 :::::
 
+
+
 ## How about you
 
 ::::: columns
@@ -81,14 +85,20 @@ Sounds like a great mix of topics!
 :::
 :::::
 
+
+
 ## Outline
 
 1.  R communities and opportunities
-2.  Listen to some birds in R
+2.  Bird bioacoustics in R
 
 > This is meant to be a interactive session. So feel free to ask questions or drop your thoughts.
 
+
+
+
 # R communities and opportunities
+
 
 ## R community
 
@@ -108,11 +118,15 @@ A community promoting open science
 
 ![](images/clipboard-55839762.png)
 
+
+
 ## Championship program
 
 -   10 month program, starting every year fall
 
 -   Scholarship for package development, with mentor paird
+
+
 
 ## bbsTaiwan
 
@@ -130,6 +144,8 @@ A community promoting open science
 
 -   A slack channel
 
+
+
 ## Posit-conf
 
 -   Opportunity scholar
@@ -138,11 +154,14 @@ A community promoting open science
 
 -   The newest update from the posit - positron announcement
 
+
+
 ## R Consortium
 
 -   Project fundings
 
 -   
+
 
 ## To summary
 
@@ -164,7 +183,10 @@ A community promoting open science
 
 -   OBS (for travelliing)
 
-# Listen to some birds in R
+
+
+
+# Bird bioacoustics in R
 
 ```{r}
 #| echo: false
@@ -176,6 +198,8 @@ library(here)
 library(DT)
 ```
 
+
+
 ## R Packages for birds
 
 There are SO many R packages developed for birds
@@ -184,7 +208,7 @@ There are SO many R packages developed for birds
 
 </iframe>
 
-## Communication and acoustic analysis {.small}
+## Communication and acoustic analysis {.smaller}
 
 | Step | Package | What it does |
 |-------------------|------------------|-----------------------------------|
@@ -210,6 +234,8 @@ Step 3.  Identify species with BirdNET (`birdnetR`, `birdnetTools`)
 
 
 > Let's play **Name that bird!** :bird:
+
+
 
 ## Step 1: Explore bird songs
 
@@ -278,7 +304,7 @@ Sys.setenv(XC_API_KEY = "YOUR_API_KEY_HERE")
 ![](images/clipboard-2550044187.png)
 
 
-## Additional search tags
+## Additional search tags {.smaller}
 
 Search tags you can combine:
 
@@ -395,7 +421,7 @@ dir.create(audio_dir, showWarnings = FALSE)
 
 
 ```{r}
-#| eval: true
+#| cache: true
 #| message: true
 download_media(metadata = amro_sunny[1,],
                path = audio_dir)
@@ -404,7 +430,7 @@ download_media(metadata = amro_sunny[1,],
 - Or a batch download:
 
 ```{r}
-#| eval: true
+#| cache: true
 #| message: true
 download_media(metadata = amro_sunny,
                path = audio_dir)
@@ -427,7 +453,7 @@ Let's target the newest download in the `audio_dir` folder:
 audio_path <- tibble(path = list.files(audio_dir, pattern = "\\.(mp3|wav)$",
                                  full.names = TRUE, ignore.case = TRUE)) |>
   mutate(modified = file.mtime(path)) |>
-  slice_max(modified, n = 1) |> 
+  slice_min(modified, n = 1) |> 
   pull(path)
 
 audio_path
@@ -562,10 +588,57 @@ Step 3.  Identify species with BirdNET (`birdnetR`, `birdnetTools`)
 > Let's play **Name that bird!** :bird:
 
 
+### How to pay
 
-## Let's play!
+1. **Player A** picks a random recording
+2. **Player B** listens and guesses the species
 
-So I have a list of recordings downloaded in advance. Let's do a random number draw. I will let you listen and view the recording, and we reveal the answer by running BirdNET. 
+**BirdNET** reveals the answer! :heart:
+
+
+## Name that bird setup
+
+Xeno-Canto Vancouver-area, songs, quality A:
+
+```{r}
+#| cache: true
+vancouver_birds <- query_xenocanto(species = 'lat: "49.26" lon: "-123.11" type: "song" q:"A"')
+```
+
+Here is the subset "answer sheet" (66 species, 122 recordings): 
+
+```{r}
+#| echo: false
+
+set.seed(123)
+vancouver_birds_selected <- vancouver_birds |>
+  group_by(species) |>
+  slice_sample(n = 2) |>
+  ungroup()
+
+vancouver_birds_selected |>
+mutate(number = row_number()) |>
+select(number, key, species, date, time, user_name, locality, file_extension) |>
+datatable(
+  options = list(
+    scrollX = TRUE,      # horizontal scroll (many columns)
+    scrollY = "400px",   # vertical scroll within this height
+    paging = FALSE,      # show all rows in the scroll box
+    dom = "ft"           # just the filter box + table
+  ),
+  class = "compact",
+  rownames = FALSE
+)
+```
+
+
+
+## Ready? 
+
+
+
+
+
 
 
 

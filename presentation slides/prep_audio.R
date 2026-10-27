@@ -13,11 +13,7 @@ library(birdnetR)
 library(birdnetTools)
 
 
-
-
-
-
-# retrieving audio from xeno-canto ----------------------------------------
+# part 1: query and download ----------------------------------------------
 
 # query sounds from Xeno-Canto
 amro <- query_xenocanto(species = "Turdus migratorius")
@@ -34,7 +30,6 @@ amro_vancouver[8,]
 
 
 
-
 # download it (saved to "presentation slides/audio")
 audio_dir <- here("presentation slides", "audio")
 dir.create(audio_dir, showWarnings = FALSE)
@@ -42,6 +37,11 @@ dir.create(audio_dir, showWarnings = FALSE)
 set.seed(123)
 download_media(metadata = amro_vancouver[8,],
                path = audio_dir)
+
+
+
+# part 2: read and check --------------------------------------------------
+
 
 # listen to it
 file <- tibble(path = list.files(audio_dir, pattern = "\\.mp3$", full.names = TRUE)) |>
@@ -61,6 +61,8 @@ readMP3(file) |>
           fastdisp = TRUE)
 
 
+# part 3: identify with BirdNET -------------------------------------------
+
 # check who is singing
 model <- load_birdnet()
 
@@ -74,7 +76,6 @@ predictions <- predict(model,
 as.data.frame(predictions) |>
   mutate(common_name = str_split_i(species_name, "_", 2)) |>
   select(start_time, end_time, common_name, confidence)
-
 
 
 
@@ -96,7 +97,7 @@ vancouver_birds_selected <- vancouver_birds |>
   ungroup()
 
 
-# download it (saved to "presentation slides/audio_game")
+# pre download (saved to "presentation slides/audio_game")
 audio_game_dir <- here("presentation slides", "audio_game")
 dir.create(audio_game_dir, showWarnings = FALSE)
 
@@ -104,7 +105,51 @@ download_media(metadata = vancouver_birds_selected,
                path = audio_game_dir)
 
 
-# Start of the game:
+
+# pre-processing of BirdNET
+
+# done by GUI
+
+
+# pre-create the spectrograms
+
+for (i in 1:nrow(vancouver_birds_selected)) {
+
+  # construct the file name
+  audio_path_raw <- paste0(str_replace_all(vancouver_birds_selected[i,]$species, " ", "_"),
+                           "-XC",
+                           vancouver_birds_selected[i,]$key)
+
+  # file name for audio
+  audio_path <- audio_path <- paste0(audio_path_raw,
+                                     ".",
+                                     vancouver_birds_selected[i,]$file_extension)
+
+  # read in the audio
+  ext <- tolower(tools::file_ext(audio_path))
+
+  if (ext == "mp3") {
+    audio <- readMP3(here("presentation slides", "audio_game", audio_path))
+  } else if (ext == "wav") {
+    audio <- readWave(here("presentation slides", "audio_game", audio_path))
+  }
+
+  # save the image
+  png(here("presentation slides", "audio_game_spectrogram", paste0(audio_path_raw, ".png")),
+      width = 1600, height = 600, res = 150)
+
+  audio |>
+    extractWave(from = 0, to = 10, xunit = "time") |>
+    spectro(flim = c(1, 10), fastdisp = TRUE, scale = FALSE)
+
+  dev.off()
+}
+
+
+
+
+
+# others ------------------------------------------------------------------
 
 # Player A (one person)
 i <- 4 # anynumber between 1:nrow(vancouver_birds)
@@ -112,8 +157,14 @@ i <- 4 # anynumber between 1:nrow(vancouver_birds)
 # Player B (group)
 
 # construct the file name
-audio_path <- paste0(str_replace_all(vancouver_birds_selected[i,]$species, " ", "_"),
-                   "-XC", vancouver_birds_selected[i,]$key, ".", vancouver_birds_selected[i,]$file_extension)
+path_raw <- paste0(str_replace_all(vancouver_birds_selected[i,]$species, " ", "_"),
+                   "-XC", vancouver_birds_selected[i,]$key)
+
+
+audio_path <- paste0(path_raw, ".", vancouver_birds_selected[i,]$file_extension)
+
+image_path <- paste0(path_raw, ".png")
+
 
 # read in the audio
 ext <- tolower(tools::file_ext(audio_path))
@@ -129,11 +180,11 @@ if (ext == "mp3") {
 audio |>
   play()
 
+
 # look
-audio |>
-  extractWave(from = 0, to = 10, xunit = "time") |>
-  spectro(flim = c(1, 10),
-          fastdisp = TRUE)
+
+
+
 
 # answer by BirdNET
 model <- load_birdnet()

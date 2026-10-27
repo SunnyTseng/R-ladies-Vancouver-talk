@@ -39,8 +39,6 @@ Sounds like a great mix of topics!
 
 -   Cool opportunity to meet R Ladies Vancouver folks!
 
-
-
 ## About me
 
 ::::: columns
@@ -65,8 +63,6 @@ Sounds like a great mix of topics!
 :::
 :::::
 
-
-
 ## How about you
 
 ::::: columns
@@ -85,8 +81,6 @@ Sounds like a great mix of topics!
 :::
 :::::
 
-
-
 ## Outline
 
 1.  R communities and opportunities
@@ -94,11 +88,7 @@ Sounds like a great mix of topics!
 
 > This is meant to be a interactive session. So feel free to ask questions or drop your thoughts.
 
-
-
-
 # R communities and opportunities
-
 
 ## R community
 
@@ -118,15 +108,11 @@ A community promoting open science
 
 ![](images/clipboard-55839762.png)
 
-
-
 ## Championship program
 
 -   10 month program, starting every year fall
 
 -   Scholarship for package development, with mentor paird
-
-
 
 ## bbsTaiwan
 
@@ -144,8 +130,6 @@ A community promoting open science
 
 -   A slack channel
 
-
-
 ## Posit-conf
 
 -   Opportunity scholar
@@ -154,14 +138,11 @@ A community promoting open science
 
 -   The newest update from the posit - positron announcement
 
-
-
 ## R Consortium
 
 -   Project fundings
 
 -   
-
 
 ## To summary
 
@@ -183,9 +164,6 @@ A community promoting open science
 
 -   OBS (for travelliing)
 
-
-
-
 # Bird bioacoustics in R
 
 ```{r}
@@ -197,8 +175,6 @@ library(tidyverse)
 library(here)
 library(DT)
 ```
-
-
 
 ## R Packages for birds
 
@@ -226,23 +202,19 @@ There are SO many R packages developed for birds
 
 ## Our plan
 
-Step 1.  Explore bird songs around the world (`suwo`)
+Step 1. Explore bird songs around the world (`suwo`)
 
-Step 2.  Read and check audio in R (`tuneR`, `seewave`)
+Step 2. Read and check audio in R (`tuneR`, `seewave`)
 
-Step 3.  Identify species with BirdNET (`birdnetR`, `birdnetTools`)
-
+Step 3. Identify species with BirdNET (`birdnetR`, `birdnetTools`)
 
 > Let's play **Name that bird!** :bird:
-
-
 
 ## Step 1: Explore bird songs
 
 [Xeno-Canto](https://xeno-canto.org): \~1 million wildlife recordings, shared under CC licenses
 
 ![](images/clipboard-2244126803.png)
-
 
 ## The one, and only one function
 
@@ -259,7 +231,6 @@ Enter the scientific name of the bird species:
 query <- suwo::query_xenocanto(species = "Haliaeetus leucocephalus")
 ```
 
-
 ```{r}
 #| echo: false
 datatable(query,
@@ -273,8 +244,6 @@ datatable(query,
   rownames = FALSE
 )
 ```
-
-
 
 ## API in Xeno-Canto
 
@@ -303,7 +272,6 @@ Sys.setenv(XC_API_KEY = "YOUR_API_KEY_HERE")
 
 ![](images/clipboard-2550044187.png)
 
-
 ## Additional search tags {.smaller}
 
 Search tags you can combine:
@@ -317,11 +285,9 @@ Search tags you can combine:
 | `lat:`, `lon:` | `lat: 49.26`, `lon: -123.11` | Latitude and longitude (1 degree) |
 | `type:` | `type:song` | Song, call, drumming... |
 
-
 ## American Robins in ...
 
-::: {.panel-tabset}
-
+::: panel-tabset
 ### Country
 
 ```{r}
@@ -329,7 +295,6 @@ Search tags you can combine:
 amro_canada <- query_xenocanto(species = 'sp: "Turdus migratorius" cnt:"canada"')
 
 ```
-
 
 ```{r}
 #| echo: false
@@ -356,7 +321,6 @@ datatable(amro_canada,
 amro_vancouver <- query_xenocanto(species = 'sp: "Turdus migratorius" lat: "49.26" lon: "-123.11"')
 ```
 
-
 ```{r}
 #| echo: false
 
@@ -375,14 +339,12 @@ datatable(amro_vancouver,
 
 ```
 
-
 ### Recordist
 
 ```{r}
 #| cache: true
 amro_sunny <- query_xenocanto(species = 'sp: "Turdus migratorius" lat: "49.26" lon: "-123.11" rec: "Sunny"')
 ```
-
 
 ```{r}
 #| echo: false
@@ -402,23 +364,19 @@ datatable(amro_sunny,
 )
 
 ```
-
 :::
-
 
 ## Download audios
 
 Use the `download_media()` function from the `suwo` package.
 
-- It can be one single audio download:
+-   It can be one single audio download:
 
 ```{r}
 #| echo: false
 audio_dir <- here("presentation slides", "audio")
 dir.create(audio_dir, showWarnings = FALSE)
 ```
-
-
 
 ```{r}
 #| cache: true
@@ -427,7 +385,7 @@ download_media(metadata = amro_sunny[1,],
                path = audio_dir)
 ```
 
-- Or a batch download:
+-   Or a batch download:
 
 ```{r}
 #| cache: true
@@ -436,8 +394,6 @@ download_media(metadata = amro_sunny,
                path = audio_dir)
 ```
 
-
-
 ## Step 2: Read and check audio in R
 
 Use the `readWave()` or `readMP3()` function from the `tuneR` package.
@@ -445,7 +401,6 @@ Use the `readWave()` or `readMP3()` function from the `tuneR` package.
 ```{r}
 library(tuneR)
 ```
-
 
 Let's target the newest download in the `audio_dir` folder:
 
@@ -460,6 +415,7 @@ audio_path
 ```
 
 Check the file extension and read it accordingly:
+
 ```{r}
 ext <- tolower(tools::file_ext(audio_path))
 
@@ -470,13 +426,9 @@ if (ext == "mp3") {
 }
 ```
 
-
-
-
-## Listen 
+## Listen
 
 To listen, use the `play()` function from the `tuneR` package:
-
 
 ```{r}
 library(tuneR)
@@ -495,7 +447,6 @@ audio |>
 htmltools::tags$audio(src = "audio/Turdus_migratorius-XC465001.mp3",
                       controls = NA)
 ```
-
 
 ## Look
 
@@ -516,13 +467,10 @@ audio |>
           fastdisp = TRUE)
 ```
 
-
 . . .
 
 -   **x-axis**: time, **y-axis**: pitch, **darkness**: loudness
 -   Every species has a "shape" you can learn to read
-
-
 
 ## Step 3: Identify species with BirdNET
 
@@ -542,8 +490,6 @@ predictions <- predict(model,
                        files = audio_path,
                        min_confidence = 0.3)
 ```
-
-
 
 ```{r}
 #| echo: false
@@ -573,28 +519,22 @@ datatable(
 
 ```
 
-
-
-
 ## Put everything together
 
-Step 1.  Explore bird songs around the world (`suwo`)
+Step 1. Explore bird songs around the world (`suwo`)
 
-Step 2.  Read and check audio in R (`tuneR`, `seewave`)
+Step 2. Read and check audio in R (`tuneR`, `seewave`)
 
-Step 3.  Identify species with BirdNET (`birdnetR`, `birdnetTools`)
-
+Step 3. Identify species with BirdNET (`birdnetR`, `birdnetTools`)
 
 > Let's play **Name that bird!** :bird:
 
-
 ### How to pay
 
-1. **Player A** picks a random recording
-2. **Player B** listens and guesses the species
+1.  **Player A** picks a random recording
+2.  **Player B** listens and guesses the species
 
 **BirdNET** reveals the answer! :heart:
-
 
 ## Name that bird setup
 
@@ -605,7 +545,7 @@ Xeno-Canto Vancouver-area, songs, quality A:
 vancouver_birds <- query_xenocanto(species = 'lat: "49.26" lon: "-123.11" type: "song" q:"A"')
 ```
 
-Sebset - here is the "answer sheet" (66 species, 112 recordings): 
+Sebset - here is the "answer sheet" (66 species, 112 recordings):
 
 ```{r}
 #| echo: false
@@ -631,32 +571,84 @@ datatable(
 )
 ```
 
+## Ready?
 
+```{r}
+#| echo: false
+#| message: false
 
-## Ready? 
+birdnet <- list.files(here("presentation slides", "audio_game_output"),
+                      pattern = "\\.BirdNET\\.results\\.csv$",
+                      full.names = TRUE) |>
+  read_csv(id = "csv_file", show_col_types = FALSE) |>
+  mutate(base = str_extract(basename(csv_file), "^[^.]+")) |>
+  select(base,
+         start       = `Start (s)`,
+         end         = `End (s)`,
+         common_name = `Common name`,
+         scientific  = `Scientific name`,
+         confidence  = Confidence) |>
+  arrange(base, start)
 
+game <- vancouver_birds_selected |>
+  mutate(base  = paste0(str_replace_all(species, " ", "_"), "-XC", key),
+         audio = file.path("audio_game", paste0(base, ".", file_extension)),
+         spec  = file.path("audio_game_spectrogram", paste0(base, ".png"))) |>
+  mutate(id = row_number()) |>
+  select(id, base, species, key, user_name, locality, audio, spec)
 
+ojs_define(game = game, birdnet = birdnet)
+```
 
+## :video_game: Who's singing?
 
+```{ojs}
+//| echo: false
+birds = transpose(game)
 
+viewof i = Inputs.number([1, birds.length],
+  {step: 1, value: 1, label: `Pick a number (1–${birds.length})`})
 
+bird = birds[i - 1]
 
+html`<audio controls src="${bird.audio}" style="width:100%"></audio>`
 
+html`<img src="${bird.spec}" style="width:100%">`
 
+detections = transpose(birdnet).filter(d => d.base === bird.base)
+```
 
+## :bird: And the answer is...
 
+```{ojs}
+//| echo: false
+md`**Xeno-canto label:** *${bird.species}*, recorded by ${bird.user_name} (XC${bird.key})
+
+**BirdNET detection:**`
+
+detections.length === 0
+  ? md`No detection`
+  : Inputs.table(detections, {
+  columns: ["start", "end", "common_name", "scientific", "confidence"],
+  header: {start: "Start (s)", end: "End (s)", common_name: "Common name",
+           scientific: "Scientific name", confidence: "Confidence"},
+  format: {confidence: x => x.toFixed(2)},
+  height: 450})
+```
 
 ## From 5 clips to 50,000 hours
 
-Real projects: hundreds of recorders × months of audio. Enter **`birdnetTools`**:
+Real projects: hundreds of recorders × months of audio. Enter `birdnetTools`
 
-## Recap: listening to birds in R
+![](images/clipboard-2366157155.png)
 
-1.  **Get**: Xeno-Canto API v3 (`httr2`, `suwo`)
-2.  **Listen & look**: `tuneR`, `seewave`
-3.  **Identify**: `birdnetR` + a location filter
-4.  **Check**: `birdnetTools` validation & thresholds
+## Recap: R + birds
+
+1.  Communities and opportunities
+2.  Packages for bird bioacoustics
+3.  The game for rainy Vancouver
+4.  R is fun!
 
 . . .
 
-> Don't trust the robot blindly: **listen** to your data!
+> Thank you!

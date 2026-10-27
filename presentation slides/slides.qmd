@@ -605,7 +605,7 @@ Xeno-Canto Vancouver-area, songs, quality A:
 vancouver_birds <- query_xenocanto(species = 'lat: "49.26" lon: "-123.11" type: "song" q:"A"')
 ```
 
-Here is the subset "answer sheet" (66 species, 122 recordings): 
+Sebset - here is the "answer sheet" (66 species, 112 recordings): 
 
 ```{r}
 #| echo: false

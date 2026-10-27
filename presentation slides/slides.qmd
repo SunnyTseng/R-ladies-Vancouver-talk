@@ -20,6 +20,7 @@ resources:
   - audio/*.mp3
 execute:
   echo: true
+from: markdown+emoji  
 ---
 
 ## R + bird (?
@@ -163,39 +164,30 @@ A community promoting open science
 
 -   OBS (for travelliing)
 
-# Listen to some birds
+# Listen to some birds in R
 
 ```{r}
-#| label: birds-setup
-#| include: false
-# All heavy lifting (downloads, BirdNET) happens in prep_audio.R.
-# Here we only read the cached results, so rendering stays fast and offline.
-library(dplyr)
-library(knitr)
+#| echo: false
+#| warning: false
+#| message: false
 
-has_birds <- file.exists("data/scorecard.rds")
-
-if (has_birds) {
-  xc_meta       <- readRDS("data/xc_meta.rds")
-  local_species <- readRDS("data/local_species.rds")
-  birdnet_all   <- readRDS("data/birdnet_all.rds")
-  birdnet_local <- readRDS("data/birdnet_local.rds")
-  scorecard     <- readRDS("data/scorecard.rds")
-}
-
-top_species <- function(detections) {
-  detections |>
-    group_by(xc_id) |>
-    slice_max(confidence, n = 1, with_ties = FALSE) |>
-    ungroup() |>
-    select(xc_id, common_name, confidence)
-}
+library(tidyverse)
+library(here)
+library(DT)
 ```
 
-## Packages for birds / bioacoustics {.smaller}
+## R Packages for birds
+
+There are SO many R packages developed for birds
+
+<iframe src="https://beausoleilmo.github.io/Ornithometrics-ctv/Ornithometrics.html" width="100%" height="550" style="border: none;">
+
+</iframe>
+
+## Communication and acoustic analysis {.small}
 
 | Step | Package | What it does |
-|----|----|----|
+|-------------------|------------------|-----------------------------------|
 | **Get recordings** | `suwo` | Search & download Xeno-Canto, Macaulay, iNaturalist |
 | **Read / convert** | `tuneR` | Read MP3/WAV, resample, convert |
 |  | `av` | Read MP3/WAV, resample, convert |
@@ -208,202 +200,382 @@ top_species <- function(detections) {
 |  | `birdnetTools` | Filter, validate, visualize BirdNET output |
 | **Soundscapes index** | `soundecology` | Acoustic indices (ACI, NDSI, ...) |
 
-## Today's plan
+## Our plan
 
-```{mermaid}
-flowchart LR
-  A[Xeno-Canto<br>search] --> B[Download<br>MP3]
-  B --> C[Listen &<br>look]
-  C --> D[BirdNET]
-  D --> E{Did it get<br>it right?}
-  E --> F[birdnetTools]
+Step 1.  Explore bird songs around the world (`suwo`)
+
+Step 2.  Read and check audio in R (`tuneR`, `seewave`)
+
+Step 3.  Identify species with BirdNET (`birdnetR`, `birdnetTools`)
+
+
+> Let's play **Name that bird!** :bird:
+
+## Step 1: Explore bird songs
+
+[Xeno-Canto](https://xeno-canto.org): \~1 million wildlife recordings, shared under CC licenses
+
+![](images/clipboard-2244126803.png)
+
+
+## The one, and only one function
+
+Use the `query_xenocanto()` function from the `suwo` package:
+
+```{r}
+library(suwo)
 ```
 
-. . .
+Enter the scientific name of the bird species:
 
-> Let's play **Name that bird!** 🐦
+```{r}
+#| cache: true
+query <- suwo::query_xenocanto(species = "Haliaeetus leucocephalus")
+```
 
-## Step 1: Ask Xeno-Canto
 
-[xeno-canto.org](https://xeno-canto.org): \~1 million wildlife recordings, shared under Creative Commons
+```{r}
+#| echo: false
+datatable(query,
+  options = list(
+    scrollX = TRUE,      # horizontal scroll (many columns)
+    scrollY = "400px",   # vertical scroll within this height
+    paging = FALSE,      # show all rows in the scroll box
+    dom = "ft"           # just the filter box + table
+  ),
+  class = "compact",
+  rownames = FALSE
+)
+```
+
+
+
+## API in Xeno-Canto
+
+:confounded: You will need API key in the first time
 
 ```{r}
 #| eval: false
-#| code-line-numbers: "|1-2|4-7"
-library(httr2)
-Sys.getenv("XC_API_KEY")    # free key from xeno-canto.org/account
-
-request("https://xeno-canto.org/api/3/recordings") |>
-  req_url_query(query = 'en:"Varied Thrush" q:A len:10-40',
-                key   = Sys.getenv("XC_API_KEY")) |>
-  req_perform() |>
-  resp_body_json(simplifyVector = TRUE)
+query <- query_xenocanto(species = "Haliaeetus leucocephalus")
 ```
 
-::: callout-tip
-Xeno-Canto has retired API v2, so `warbleR::query_xc()` no longer works. Use API v3 (with a key), or try the newer `suwo` package.
-:::
-
-## Step 2: Download
-
 ```{r}
-#| eval: false
-library(purrr)
-
-walk2(xc_meta$download_url, xc_meta$mp3, \(url, dest) {
-  request(url) |> req_perform(path = dest)
+#| error: true
+#| echo: false
+withr::with_envvar(c(XC_API_KEY = NA), {
+  query <- query_xenocanto(species = "Haliaeetus leucocephalus")
 })
 ```
 
-. . .
-
-Search tags you can combine:
-
-| Tag     | Example           | Meaning                      |
-|---------|-------------------|------------------------------|
-| `en:`   | `en:"Barred Owl"` | English name                 |
-| `q:`    | `q:A`             | Recording quality (A = best) |
-| `len:`  | `len:10-40`       | Length in seconds            |
-| `cnt:`  | `cnt:canada`      | Country                      |
-| `type:` | `type:song`       | Song, call, drumming...      |
-
-## Step 3: Listen & look
+:hand_over_mouth: Register on Xeno-Canto –\> copy API –\> set in R
 
 ```{r}
 #| eval: false
-library(tuneR)
-library(seewave)
 
-wav <- readMP3("audio/XC123456.mp3")
-wav <- ffilter(wav, from = 1000, output = "Wave")   # drop low rumble
-
-spectro(wav, flim = c(0, 10), collevels = seq(-40, 0, 1))
+Sys.setenv(XC_API_KEY = "YOUR_API_KEY_HERE")
 ```
+
+![](images/clipboard-2550044187.png)
+
+
+## Additional search tags
+
+Search tags you can combine:
+
+| Tag | Example | Meaning |
+|------------------|-------------------------|-----------------------------|
+| `en:` | `en:"Barred Owl"` | English name |
+| `q:` | `q:A` | Recording quality (A = best) |
+| `len:` | `len:10-40` | Length in seconds |
+| `cnt:` | `cnt:canada` | Country |
+| `lat:`, `lon:` | `lat: 49.26`, `lon: -123.11` | Latitude and longitude (1 degree) |
+| `type:` | `type:song` | Song, call, drumming... |
+
+
+## American Robins in ...
+
+::: {.panel-tabset}
+
+### Country
+
+```{r}
+#| cache: true
+amro_canada <- query_xenocanto(species = 'sp: "Turdus migratorius" cnt:"canada"')
+
+```
+
+
+```{r}
+#| echo: false
+
+print(paste0("Number of recordings found: ", nrow(amro_canada)))
+
+datatable(amro_canada,
+  options = list(
+    scrollX = TRUE,      # horizontal scroll (many columns)
+    scrollY = "400px",   # vertical scroll within this height
+    paging = FALSE,      # show all rows in the scroll box
+    dom = "ft"           # just the filter box + table
+  ),
+  class = "compact",
+  rownames = FALSE
+)
+
+```
+
+### City
+
+```{r}
+#| cache: true
+amro_vancouver <- query_xenocanto(species = 'sp: "Turdus migratorius" lat: "49.26" lon: "-123.11"')
+```
+
+
+```{r}
+#| echo: false
+
+print(paste0("Number of recordings found: ", nrow(amro_vancouver)))
+
+datatable(amro_vancouver,
+  options = list(
+    scrollX = TRUE,      # horizontal scroll (many columns)
+    scrollY = "400px",   # vertical scroll within this height
+    paging = FALSE,      # show all rows in the scroll box
+    dom = "ft"           # just the filter box + table
+  ),
+  class = "compact",
+  rownames = FALSE
+)
+
+```
+
+
+### Recordist
+
+```{r}
+#| cache: true
+amro_sunny <- query_xenocanto(species = 'sp: "Turdus migratorius" lat: "49.26" lon: "-123.11" rec: "Sunny"')
+```
+
+
+```{r}
+#| echo: false
+
+print(paste0("Number of recordings found: ", nrow(amro_sunny)))
+
+
+datatable(amro_sunny,
+  options = list(
+    scrollX = TRUE,      # horizontal scroll (many columns)
+    scrollY = "400px",   # vertical scroll within this height
+    paging = FALSE,      # show all rows in the scroll box
+    dom = "ft"           # just the filter box + table
+  ),
+  class = "compact",
+  rownames = FALSE
+)
+
+```
+
+:::
+
+
+## Download audios
+
+Use the `download_media()` function from the `suwo` package.
+
+- It can be one single audio download:
+
+```{r}
+#| echo: false
+audio_dir <- here("presentation slides", "audio")
+dir.create(audio_dir, showWarnings = FALSE)
+```
+
+
+
+```{r}
+#| eval: true
+#| message: true
+download_media(metadata = amro_sunny[1,],
+               path = audio_dir)
+```
+
+- Or a batch download:
+
+```{r}
+#| eval: true
+#| message: true
+download_media(metadata = amro_sunny,
+               path = audio_dir)
+```
+
+
+
+## Step 2: Read and check audio in R
+
+Use the `readWave()` or `readMP3()` function from the `tuneR` package.
+
+```{r}
+library(tuneR)
+```
+
+
+Let's target the newest download in the `audio_dir` folder:
+
+```{r}
+audio_path <- tibble(path = list.files(audio_dir, pattern = "\\.(mp3|wav)$",
+                                 full.names = TRUE, ignore.case = TRUE)) |>
+  mutate(modified = file.mtime(path)) |>
+  slice_max(modified, n = 1) |> 
+  pull(path)
+
+audio_path
+```
+
+Check the file extension and read it accordingly:
+```{r}
+ext <- tolower(tools::file_ext(audio_path))
+
+if (ext == "mp3") {
+  audio <- readMP3(audio_path)
+} else if (ext == "wav") {
+  audio <- readWave(audio_path)
+}
+```
+
+
+
+
+## Listen 
+
+To listen, use the `play()` function from the `tuneR` package:
+
+
+```{r}
+library(tuneR)
+```
+
+Indicate the audio object:
+
+```{r}
+#| eval: false
+audio |> 
+  play()
+```
+
+```{r}
+#| echo: false
+htmltools::tags$audio(src = "audio/Turdus_migratorius-XC465001.mp3",
+                      controls = NA)
+```
+
+
+## Look
+
+To visualize, use the `spectro()` function from the `seewave` package:
+
+```{r}
+library(seewave)
+```
+
+Indicate the audio abject:
+
+```{r}
+#| fig-width: 28
+#| out-width: "100%"
+audio |>
+  extractWave(from = 2, to = 11, xunit = "time") |>
+  spectro(flim = c(1, 6),
+          fastdisp = TRUE)
+```
+
 
 . . .
 
 -   **x-axis**: time, **y-axis**: pitch, **darkness**: loudness
 -   Every species has a "shape" you can learn to read
 
-```{r}
-#| label: name-that-bird
-#| output: asis
-#| echo: false
-if (has_birds) {
-  for (i in seq_len(nrow(xc_meta))) {
-    rec  <- xc_meta[i, ]
-    pick <- scorecard[scorecard$xc_id == rec$xc_id, ]
 
-    cat("\n\n## Name that bird! #", i, "\n\n", sep = "")
-    cat('<audio controls src="audio/', basename(rec$mp3), '"></audio>\n\n', sep = "")
-    cat("![](images/spectrograms/", rec$xc_id, ".png){height=330}\n\n", sep = "")
-    cat(":::: {.columns}\n")
-    cat("::: {.column width=\"50%\" .fragment}\n**BirdNET says:** ", pick$birdnet_says,
-        if (!is.na(pick$max_conf)) sprintf(" (%.2f)", pick$max_conf), "\n:::\n", sep = "")
-    cat("::: {.column width=\"50%\" .fragment}\n**Xeno-Canto:** ", rec$common_name, " ",
-        if (isTRUE(pick$correct)) "✅" else "❌", "\n:::\n::::\n\n", sep = "")
-    cat("::: aside\n", rec$xc_id, " · ", rec$recordist, " · ", rec$location,
-        " · [licence](", rec$licence, ")\n:::\n\n", sep = "")
-  }
-} else {
-  cat("\n\n## Name that bird!\n\n*Run `prep_audio.R` first to fetch the recordings.*\n\n")
-}
-```
 
-## Step 4: Run BirdNET {.smaller}
+## Step 3: Identify species with BirdNET
+
+Use the `predict()` function from the `birdnetR` package.
 
 ```{r}
-#| eval: false
 library(birdnetR)
-
-model <- load_birdnet(type = "acoustic")    # BirdNET v2.4, ~6,500 species
-
-predict(model, files = "audio/XC123456.mp3", min_confidence = 0.1) |>
-  as.data.frame()
 ```
 
-. . .
-
-```{r}
-#| echo: false
-if (has_birds) {
-  birdnet_all |>
-    select(xc_id, start_time, end_time, common_name, confidence) |>
-    head(4) |>
-    kable(digits = 2)
-}
-```
-
--   Splits audio into **3-second** windows and scores every species in each one
-
-## Step 5: Use location
+Need to load the BirdNET model first:
 
 ```{r}
 #| eval: false
-geo <- load_birdnet(type = "geo")
+model <- load_birdnet()
 
-local_species <- predict(geo, latitude = 49.28, longitude = -123.12,
-                         week = 43) |>          # Vancouver, late October
-  as.data.frame()
-
-predict(model, files = "audio/XC123456.mp3",
-        species_list = local_species$species_name)
+predictions <- predict(model,
+                       files = audio_path,
+                       min_confidence = 0.3)
 ```
 
-. . .
+
 
 ```{r}
 #| echo: false
-#| results: asis
-if (has_birds) {
-  cat("The geo model expects **", nrow(local_species),
-      "** species in Vancouver this week, out of ~6,500.\n\n", sep = "")
+#| messages: false
 
-  top_species(birdnet_all) |>
-    left_join(top_species(birdnet_local), by = "xc_id",
-              suffix = c("_global", "_vancouver")) |>
-    kable(digits = 2,
-          col.names = c("Recording", "Global", "conf.", "Vancouver only", "conf."))
+if (file.exists("birdnet_results.rds")) {
+  df <- readRDS("birdnet_results.rds")
+} else {
+  model <- load_birdnet()
+  df <- predict(model, files = audio_path, min_confidence = 0.3) |>
+    as.data.frame()
+  saveRDS(df, "birdnet_results.rds")
 }
+
+df |> 
+select(-input) |>
+datatable(
+  options = list(
+    scrollX = TRUE,
+    scrollY = "400px",
+    paging = FALSE,
+    dom = "ft"
+  ),
+  class = "compact",
+  rownames = FALSE
+)
+
 ```
 
-## Scorecard
 
-```{r}
-#| echo: false
-if (has_birds) {
-  scorecard |>
-    mutate(correct = if_else(correct, "✅", "❌")) |>
-    select(xc_id, xeno_canto_says, birdnet_says, max_conf, correct) |>
-    kable(digits = 2,
-          col.names = c("Recording", "Xeno-Canto", "BirdNET", "Confidence", ""))
-}
-```
 
-. . .
 
-::: callout-important
-A BirdNET **confidence score is not a probability**. Pick thresholds per species, using validated data (Wood & Kahl 2024).
-:::
+## Put everything together
+
+Step 1.  Explore bird songs around the world (`suwo`)
+
+Step 2.  Read and check audio in R (`tuneR`, `seewave`)
+
+Step 3.  Identify species with BirdNET (`birdnetR`, `birdnetTools`)
+
+
+> Let's play **Name that bird!** :bird:
+
+
+
+## Let's play!
+
+So I have a list of recordings downloaded in advance. Let's do a random number draw. I will let you listen and view the recording, and we reveal the answer by running BirdNET. 
+
+
+
+
+
+
 
 ## From 5 clips to 50,000 hours
 
 Real projects: hundreds of recorders × months of audio. Enter **`birdnetTools`**:
-
-```{r}
-#| eval: false
-library(birdnetTools)
-
-detections <- birdnet_combine("path/to/birdnet/output")      # read everything
-
-birdnet_launch_validation(detections)                         # Shiny app: listen & verify
-
-thresholds <- birdnet_calc_threshold(validated, precision = 0.9)
-
-detections |>
-  birdnet_filter(threshold = thresholds) |>                   # species-specific cut-offs
-  birdnet_heatmap(species = "Varied Thrush")
-```
 
 ## Recap: listening to birds in R
 

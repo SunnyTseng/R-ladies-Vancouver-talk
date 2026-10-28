@@ -12,12 +12,11 @@ format:
     chalkboard: 
       buttons: false
     preview-links: auto
+    incremental: true
     # logo:
     #   path: images/quarto.png
     #   alt: "Quarto logo"
-resources:
-  - demo.pdf
-  - audio/*.mp3
+
 execute:
   echo: true
 from: markdown+emoji  
@@ -27,8 +26,6 @@ from: markdown+emoji
 
 Sounds like a great mix of topics!
 
--   rOpenSci
-
 -   "doing a talk... on any of your projects"
 
     -   R enthusiast
@@ -37,7 +34,7 @@ Sounds like a great mix of topics!
 
     -   bioacoustics researcher
 
--   Cool opportunity to meet R Ladies Vancouver folks!
+-   Cool opportunity to meet R folks in Vancouver!
 
 ## About me
 
@@ -45,17 +42,15 @@ Sounds like a great mix of topics!
 ::: {.column width="65%"}
 -   Independent data consultant
 
--   R user since 2015 (!
+-   R user since 2015
 
     -   script --\> shinyR --\> rmarkdown --\> quarto --\> package development
 
--   Exploring AI agent in R
+    -   using AI agent in R
 
-    -   claude code
-    -   codex
-    -   posit agent
+-   Sound recording
 
--   Carve a pumpkin!
+-   Hip hop dancing
 :::
 
 ::: {.column width="35%"}
@@ -65,104 +60,148 @@ Sounds like a great mix of topics!
 
 ## How about you
 
-::::: columns
-::: {.column width="35%"}
+:::::: columns
+:::: {.column width="35%"}
 -   Your name
 
 -   Career background
 
 -   Experience with R
 
+-   New learning plan?
+
 -   Halloween plans?
+
+::: fragment
+> Nice to meet you all!
 :::
+::::
 
 ::: {.column width="65%"}
 ![](images/clipboard-2727946122.png)
 :::
-:::::
+::::::
+
+::: aside
+Artwork by [\@allison_horst](https://allisonhorst.com/), CC BY 4.0
+:::
 
 ## Outline
 
-1.  R communities and opportunities
-2.  Bird bioacoustics in R
+1.  Communities and opportunities
+2.  Bird bioacoustics research in R
 
-> This is meant to be a interactive session. So feel free to ask questions or drop your thoughts.
+. . .
+
+> This talk / presentation / workshop is meant to be a interactive session. So feel free to ask questions or drop your thoughts.
 
 # R communities and opportunities
 
-## R community
-
-A community is essential, especially in this fast-changing world
-
-To share experience, information, most updated tools
-
-#### R communities
-
--   rOpenSci - open tools for open science (2024)
-
--   R Ladies
-
 ## rOpenSci
 
-A community promoting open science
+A non-profit initiative that supports open and reproducible research
+
+. . .
 
 ![](images/clipboard-55839762.png)
 
-## Championship program
+## Their main programs
+
+-   Software peer review (pre-JOSS fast-track)
+
+-   The R universe project (binary package, CRAN)
+
+. . .
+
+![](images/clipboard-1697510592.png)
+
+## Community activities
+
+-   Slack channels (new tools, jobs, gen-AI, etc.)
+
+-   Monthly co-working sessions (worldwide)
+
+-   Colleague coffee chats
+
+. . .
+
+![](images/clipboard-2529077636.png)
+
+## Championship program 2023
 
 -   10 month program, starting every year fall
 
--   Scholarship for package development, with mentor paird
+-   Scholarship for package development, with a paired mentor
+
+-   They fund you, and teach you build a package!
+
+. . .
+
+![](images/clipboard-669145108.png)
 
 ## bbsTaiwan
 
--   What I did with the championship program
+To streamline the retrieval and analysis of Taiwan Breeding Birds Survey data
 
-## Other initiatives
+![](images/clipboard-1154041828.png){fig-align="center"}
 
--   Peer-reviewed package
+## bbsTaiwan
 
--   R universe package
+This package can fetch the breeding birds survey data in one line of code
 
--   working hours
+![](images/clipboard-4170122635.png)
 
--   community call
+## bbsTaiwan
 
--   A slack channel
+Also provide functions to visualize the distribution of the species
 
-## Posit-conf
+![](images/clipboard-4198707832.png)
 
--   Opportunity scholar
+## Community building
 
--   Workshops - Jenny Bryan, Hadley Waker
+Contribute back to my home country with open source package
 
--   The newest update from the posit - positron announcement
+![](images/clipboard-3760791946.png)
 
-## R Consortium
+## Posit::conf 2024
 
--   Project fundings
+Opportunity scholar, workshops, super stars, news in R (Positron in 2024)!
 
--   
+![](images/clipboard-456793134.png){fig-align="center"}
 
-## To summary
+## NSERC MSFSS 2025
 
-#### R communities
+A 3 month visiting scholar in Chemnitz, Germany, to build `birdnetTools`
 
--   rOpenSci
+![](images/clipboard-1575136135.png)
+
+## R Consortium 2026
+
+Grant for developers and **community members** working on projects that improve R’s infrastructure, packages, and community.
+
+![](images/clipboard-386464564.png)
+
+## R communities and opportunities
+
+One opportunity is connected to the next one
+
+-   rOpenSci - community
+
+-   posit::conf - inspiration
+
+-   NSERC MSFSS - collaboration
+
+-   R Consortium - contribution
+
+. . .
 
 -   R Ladies
 
-#### Conferences
-
--   posit-conf
-
 -   useR!
 
-#### Funding
+-   OBF event award
 
--   R Consortium (for event, community building, project)
-
--   OBS (for travelliing)
+-   ... do you know any more opportunities?
 
 # Bird bioacoustics in R
 
@@ -179,6 +218,8 @@ library(DT)
 ## R Packages for birds
 
 There are SO many R packages developed for birds
+
+. . .
 
 <iframe src="https://beausoleilmo.github.io/Ornithometrics-ctv/Ornithometrics.html" width="100%" height="550" style="border: none;">
 
@@ -200,13 +241,23 @@ There are SO many R packages developed for birds
 |  | `birdnetTools` | Filter, validate, visualize BirdNET output |
 | **Soundscapes index** | `soundecology` | Acoustic indices (ACI, NDSI, ...) |
 
-## Our plan
+## General workflow
+
+This is a simplified research workflow, but carries the main steps of a bioacoustics project
+
+. . .
 
 Step 1. Explore bird songs around the world (`suwo`)
 
+. . .
+
 Step 2. Read and check audio in R (`tuneR`, `seewave`)
 
+. . .
+
 Step 3. Identify species with BirdNET (`birdnetR`, `birdnetTools`)
+
+. . .
 
 > Let's play **Name that bird!** :bird:
 
@@ -218,11 +269,15 @@ Step 3. Identify species with BirdNET (`birdnetR`, `birdnetTools`)
 
 ## The one, and only one function
 
+. . .
+
 Use the `query_xenocanto()` function from the `suwo` package:
 
 ```{r}
 library(suwo)
 ```
+
+. . .
 
 Enter the scientific name of the bird species:
 
@@ -230,6 +285,9 @@ Enter the scientific name of the bird species:
 #| cache: true
 query <- suwo::query_xenocanto(species = "Haliaeetus leucocephalus")
 ```
+
+
+. . .
 
 ```{r}
 #| echo: false
@@ -247,6 +305,8 @@ datatable(query,
 
 ## API in Xeno-Canto
 
+. . .
+
 :confounded: You will need API key in the first time
 
 ```{r}
@@ -261,6 +321,8 @@ withr::with_envvar(c(XC_API_KEY = NA), {
   query <- query_xenocanto(species = "Haliaeetus leucocephalus")
 })
 ```
+
+. . .
 
 :hand_over_mouth: Register on Xeno-Canto –\> copy API –\> set in R
 
@@ -285,23 +347,23 @@ Search tags you can combine:
 | `lat:`, `lon:` | `lat: 49.26`, `lon: -123.11` | Latitude and longitude (1 degree) |
 | `type:` | `type:song` | Song, call, drumming... |
 
-## American Robins in ...
+## Black-capped Chickadee in ...
 
 ::: panel-tabset
 ### Country
 
 ```{r}
 #| cache: true
-amro_canada <- query_xenocanto(species = 'sp: "Turdus migratorius" cnt:"canada"')
+bcch_canada <- query_xenocanto(species = 'sp: "Poecile atricapillus" cnt:"canada"')
 
 ```
 
 ```{r}
 #| echo: false
 
-print(paste0("Number of recordings found: ", nrow(amro_canada)))
+print(paste0("Number of recordings found: ", nrow(bcch_canada)))
 
-datatable(amro_canada,
+datatable(bcch_canada,
   options = list(
     scrollX = TRUE,      # horizontal scroll (many columns)
     scrollY = "400px",   # vertical scroll within this height
@@ -318,15 +380,15 @@ datatable(amro_canada,
 
 ```{r}
 #| cache: true
-amro_vancouver <- query_xenocanto(species = 'sp: "Turdus migratorius" lat: "49.26" lon: "-123.11"')
+bcch_vancouver <- query_xenocanto(species = 'sp: "Poecile atricapillus" lat: "49.26" lon: "-123.11"')
 ```
 
 ```{r}
 #| echo: false
 
-print(paste0("Number of recordings found: ", nrow(amro_vancouver)))
+print(paste0("Number of recordings found: ", nrow(bcch_vancouver)))
 
-datatable(amro_vancouver,
+datatable(bcch_vancouver,
   options = list(
     scrollX = TRUE,      # horizontal scroll (many columns)
     scrollY = "400px",   # vertical scroll within this height
@@ -343,16 +405,16 @@ datatable(amro_vancouver,
 
 ```{r}
 #| cache: true
-amro_sunny <- query_xenocanto(species = 'sp: "Turdus migratorius" lat: "49.26" lon: "-123.11" rec: "Sunny"')
+bcch_sunny <- query_xenocanto(species = 'sp: "Poecile atricapillus" lat: "49.26" lon: "-123.11" rec: "Sunny"')
 ```
 
 ```{r}
 #| echo: false
 
-print(paste0("Number of recordings found: ", nrow(amro_sunny)))
+print(paste0("Number of recordings found: ", nrow(bcch_sunny)))
 
 
-datatable(amro_sunny,
+datatable(bcch_sunny,
   options = list(
     scrollX = TRUE,      # horizontal scroll (many columns)
     scrollY = "400px",   # vertical scroll within this height
@@ -368,9 +430,13 @@ datatable(amro_sunny,
 
 ## Download audios
 
+. . .
+
 Use the `download_media()` function from the `suwo` package.
 
 -   It can be one single audio download:
+
+. . .
 
 ```{r}
 #| echo: false
@@ -381,20 +447,24 @@ dir.create(audio_dir, showWarnings = FALSE)
 ```{r}
 #| cache: true
 #| message: true
-download_media(metadata = amro_sunny[1,],
+download_media(metadata = bcch_sunny[1,],
                path = audio_dir)
 ```
 
 -   Or a batch download:
 
+. . .
+
 ```{r}
 #| cache: true
 #| message: true
-download_media(metadata = amro_sunny,
+download_media(metadata = bcch_sunny,
                path = audio_dir)
 ```
 
 ## Step 2: Read and check audio in R
+
+. . .
 
 Use the `readWave()` or `readMP3()` function from the `tuneR` package.
 
@@ -402,17 +472,21 @@ Use the `readWave()` or `readMP3()` function from the `tuneR` package.
 library(tuneR)
 ```
 
-Let's target the newest download in the `audio_dir` folder:
+. . .
+
+Let's read one audio in the `audio_dir` folder:
 
 ```{r}
 audio_path <- tibble(path = list.files(audio_dir, pattern = "\\.(mp3|wav)$",
                                  full.names = TRUE, ignore.case = TRUE)) |>
   mutate(modified = file.mtime(path)) |>
-  slice_min(modified, n = 1) |> 
+  slice_max(modified, n = 1) |> 
   pull(path)
 
 audio_path
 ```
+
+. . .
 
 Check the file extension and read it accordingly:
 
@@ -428,11 +502,15 @@ if (ext == "mp3") {
 
 ## Listen
 
+. . .
+
 To listen, use the `play()` function from the `tuneR` package:
 
 ```{r}
 library(tuneR)
 ```
+
+. . .
 
 Indicate the audio object:
 
@@ -444,17 +522,21 @@ audio |>
 
 ```{r}
 #| echo: false
-htmltools::tags$audio(src = "audio/Turdus_migratorius-XC465001.mp3",
+htmltools::tags$audio(src = "audio/Poecile_atricapillus-XC531549.mp3",
                       controls = NA)
 ```
 
 ## Look
+
+. . .
 
 To visualize, use the `spectro()` function from the `seewave` package:
 
 ```{r}
 library(seewave)
 ```
+
+. . .
 
 Indicate the audio abject:
 
@@ -463,16 +545,16 @@ Indicate the audio abject:
 #| out-width: "100%"
 audio |>
   extractWave(from = 2, to = 11, xunit = "time") |>
-  spectro(flim = c(1, 6),
+  spectro(flim = c(2, 9),
           fastdisp = TRUE)
 ```
-
-. . .
 
 -   **x-axis**: time, **y-axis**: pitch, **darkness**: loudness
 -   Every species has a "shape" you can learn to read
 
 ## Step 3: Identify species with BirdNET
+
+. . .
 
 Use the `predict()` function from the `birdnetR` package.
 
@@ -480,7 +562,9 @@ Use the `predict()` function from the `birdnetR` package.
 library(birdnetR)
 ```
 
-Need to load the BirdNET model first:
+. . .
+
+Load model and run prediction:
 
 ```{r}
 #| eval: false
@@ -490,6 +574,8 @@ predictions <- predict(model,
                        files = audio_path,
                        min_confidence = 0.3)
 ```
+
+. . .
 
 ```{r}
 #| echo: false
@@ -521,29 +607,32 @@ datatable(
 
 ## Put everything together
 
+. . .
+
 Step 1. Explore bird songs around the world (`suwo`)
+
+. . .
 
 Step 2. Read and check audio in R (`tuneR`, `seewave`)
 
+. . .
+
 Step 3. Identify species with BirdNET (`birdnetR`, `birdnetTools`)
+
+. . .
 
 > Let's play **Name that bird!** :bird:
 
-### How to pay
+## Guess the birds in Vancouver!
 
-1.  **Player A** picks a random recording
-2.  **Player B** listens and guesses the species
-
-**BirdNET** reveals the answer! :heart:
-
-## Name that bird setup
-
-Xeno-Canto Vancouver-area, songs, quality A:
+Vancouver-area, songs, high quality recordings:
 
 ```{r}
 #| cache: true
 vancouver_birds <- query_xenocanto(species = 'lat: "49.26" lon: "-123.11" type: "song" q:"A"')
 ```
+
+. . .
 
 Sebset - here is the "answer sheet" (66 species, 112 recordings):
 
@@ -571,7 +660,18 @@ datatable(
 )
 ```
 
-## Ready?
+## How to play
+
+1.  **Player A** picks a random recording
+2.  **Player B** listens and guesses the species
+
+::: fragment
+**BirdNET** reveals the answer! :heart:
+:::
+
+. . .
+
+> Ready?
 
 ```{r}
 #| echo: false
@@ -622,7 +722,9 @@ detections = transpose(birdnet).filter(d => d.base === bird.base)
 
 ```{ojs}
 //| echo: false
-md`**Xeno-canto label:** *${bird.species}*, recorded by ${bird.user_name} (XC${bird.key})
+md`**Xeno-Canto label:** 
+
+*${bird.species}*, recorded by ${bird.user_name} (XC${bird.key})
 
 **BirdNET detection:**`
 
@@ -640,7 +742,7 @@ detections.length === 0
 
 Real projects: hundreds of recorders × months of audio. Enter `birdnetTools`
 
-![](images/clipboard-2366157155.png)
+![](images/clipboard-2366157155.png){fig-align="center"}
 
 ## Recap: R + birds
 
@@ -652,3 +754,7 @@ Real projects: hundreds of recorders × months of audio. Enter `birdnetTools`
 . . .
 
 > Thank you!
+
+::: aside
+Presentation by Sunny Tseng <https://sunnytseng.ca/>, CC BY 4.0
+:::
